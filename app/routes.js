@@ -83,28 +83,19 @@ function isLoggedIn(req, res, next) {
     });
   });
 
-   function display_collection_page(req, res, isShowPage) {
-    console.log(req.params)
-    id = req.params.id
-    if (id.indexOf('custom-') == -1) {
-      id = 'custom-' + id
-    }
 
-    params = {'id': id}
-    console.log(params)
+  function make_default_vote_dict() { 
+    return { 'meh': 0, 'good': 0, 'bad': 0 } 
+  }
+
+  function build_vote_dict(req, collectionId, callback) {
     votes = Vote.find({ collectionId: id }, function(err, votes) {
       if (err) return console.error(err);
       console.log(votes);
 
       var voteCounts = {}
       var myVotes = {}
-
-      function make_default_vote_dict() { return {
-        'meh': 0,
-        'good': 0,
-        'bad': 0
-      } }
-
+ 
       votes.forEach(function(vote) {
         if (!(vote.tweetId in voteCounts)) {
           voteCounts[vote.tweetId] = make_default_vote_dict()
@@ -117,6 +108,25 @@ function isLoggedIn(req, res, next) {
         }
       })
 
+      callback(voteCounts, myVotes);
+
+    });
+  }
+
+  function getId(id) {
+    if (id.indexOf('custom-') == -1) {
+      return 'custom-' + id
+    }
+    return id;
+  }
+
+  function display_collection_page(req, res, isShowPage) {
+    console.log(req.params)
+    id = getId(req.params.id)
+    
+    params = {'id': id}
+    console.log(params)
+    build_vote_dict(req, id, function(voteCounts, myVotes) {
       client.get('collections/entries.json', params, function(error, response, unknown){
         console.log(error);
         console.log(tweets);
@@ -144,7 +154,7 @@ function isLoggedIn(req, res, next) {
           description: response['objects']['timelines'][id]['description']
         });
       })
-    })
+    });
   }
 
   // colllection eval tool SECTION =========================
@@ -154,6 +164,21 @@ function isLoggedIn(req, res, next) {
 
   app.get('/collection_eval/:id/show', isLoggedIn, function(req, res) {
     display_collection_page(req, res, true)
+  });
+  
+  app.get('/collection_eval/:id/show.csv', isLoggedIn, function(req, res) {
+    id = getId(req.params.id)
+    res.set({"Content-Disposition":"attachment; filename=\"" + id + ".csv\""});
+    
+    build_vote_dict(req, id, function(voteCounts, myVotes) {
+      text = 'tweetId,bad,meh,good\n';
+
+      Object.keys(voteCounts).forEach(function(tweetId) {
+        text += tweetId + ',' + voteCounts[tweetId]['bad'] + ',' + voteCounts[tweetId]['meh'] + ',' + voteCounts[tweetId]['good']  + '\n';
+      });
+
+      res.send(text);
+    })
   });
 
 
