@@ -36,6 +36,11 @@
         <h3>
           <%=description%>
         </h3>
+        <% if(!isShowPage){ %>
+          <a href="/collection_eval/<%=collectionId%>/rate">Eval Collection</a>
+        <% } else { %>
+          <a href="/collection_eval/<%=collectionId%>/show">View Results</a>
+        <% } %>
     </div>
 
       <% tweets.forEach(function(tweet){ %>
@@ -69,11 +74,15 @@
                     </label>
                   </div>
                 <% } else { %>
-                  <table>
+                  <table class="table">
                     <tr>
-                      <td>Good: <%=tweet.counts.good%></td>
-                      <td>Meh: <%=tweet.counts.meh%></td>
-                      <td>Bad: <%=tweet.counts.bad%></td>
+                      <th>Good</th>
+                      <th>Meh</th>
+                      <th>Bad</th>
+                    </tr><tr>
+                      <td><%=tweet.counts.good%></td>
+                      <td><%=tweet.counts.meh%></td>
+                      <td><%=tweet.counts.bad%></td>
                     </tr>
                   </table>
                 <% } %>

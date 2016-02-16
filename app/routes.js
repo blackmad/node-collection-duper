@@ -34,7 +34,9 @@ function isLoggedIn(req, res, next) {
 
   // show the home page (will also have our login links)
   app.get('/', function(req, res) {
-    res.render('index.ejs');
+    res.render('index.ejs', {
+      user: req.user
+    });
   });
 
   // PROFILE SECTION =========================
@@ -74,7 +76,7 @@ function isLoggedIn(req, res, next) {
     }).filter(Boolean);
 
     console.log(record_save_cbs);
-    // res.redirect('/collection_eval/' + id);
+    res.redirect('/collection_eval/' + collectionId + '/show')
 
     Async.parallel(record_save_cbs, function() {
       console.log('finished inserts');
