@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+
+<html>
+<head>
+  <meta name="generator" content="HTML Tidy for Mac OS X (vers 25 March 2009), see www.w3.org">
+
+  <title>Collection Rater</title>
+<!-- Latest compiled and minified CSS -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href=
+  "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" type="text/css">
+  <script id="twitter-wjs" type="text/javascript" async="" defer src=
+  "//platform.twitter.com/widgets.js">
+</script>
+  <style type="text/css">
+      body         { padding-top:80px; word-wrap:break-word; }
+  </style>
+</head>
+
+<body>
+  <form method="GET" role="form" action="/save_votes">
+    <div class="container">
+    <div class="page-header text-center">
+        <h1><span class="fa fa-anchor"></span><a href="https://twitter.com/TwitterDev/timelines/<%=collectionId%>">
+          <%=name%></a>
+        </h1>
+        <h3>
+          <%=description%>
+        </h3>
+    </div>
+
+      <% tweets.forEach(function(tweet){ %>
+        <div class="row">
+          <div class="col-sm-6 col-sm-offset-3">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <blockquote class="twitter-tweet" data-lang="en">
+                  <p lang="en" dir="ltr">Sunsets don't get much better than this one over <a href=
+                  "https://twitter.com/GrandTetonNPS">@GrandTetonNPS</a>. <a href=
+                  "https://twitter.com/hashtag/nature?src=hash">#nature</a> <a href=
+                  "https://twitter.com/hashtag/sunset?src=hash">#sunset</a> <a href=
+                  "http://t.co/YuKy2rcjyU">pic.twitter.com/YuKy2rcjyU</a></p>&mdash; US Dept of
+                  Interior (@Interior) <a href=
+                  "https://twitter.com/Interior/status/<%=tweet.id%>">May 5, 2014</a>
+                </blockquote>
+              </div>
+
+              <div class="panel-footer text-center">
+
+                <% if(!isShowPage){ %>
+                  <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary">
+                      <input type="radio" name="quality-<%=tweet.id%>" autocomplete="off" data-tweet-id="<%=tweet.id%>" value="<%=tweet.id%>-good" id="<%=tweet.id%>-good"> Good
+                    </label> 
+                    <label class="btn btn-warning">
+                      <input type="radio" name="quality-<%=tweet.id%>" autocomplete="off" data-tweet-id="<%=tweet.id%>" value="<%=tweet.id%>-meh" id="<%=tweet.id%>-meh"> Meh
+                    </label> 
+                    <label class="btn btn-danger">
+                      <input type="radio" name="quality-<%=tweet.id%>" autocomplete="off" data-tweet-id="<%=tweet.id%>" value="<%=tweet.id%>-bad" id=value="<%=tweet.id%>-bad"> Bad
+                    </label>
+                  </div>
+                <% } else { %>
+                  <table>
+                    <tr>
+                      <td>Good: <%=tweet.counts.good%></td>
+                      <td>Meh: <%=tweet.counts.meh%></td>
+                      <td>Bad: <%=tweet.counts.bad%></td>
+                    </tr>
+                  </table>
+                <% } %>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+      <div class="row text-center">
+        <input type="hidden" name="collectionId" value="<%=collectionId%>">
+        <input type="submit" class="btn btn-info" value="Submit Button">
+      </div>
+    </div>
+  </form>
+</body>
+</html>
